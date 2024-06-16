@@ -4,7 +4,7 @@ import Recipes from "../components/Recipes";
 
 const Home = () => {
   return (
-    <div>
+    <div className="max-w-[85%]">
       <PopularRecipes />
       <Recipes />
     </div>
