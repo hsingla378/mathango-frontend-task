@@ -5,10 +5,12 @@ import { Header } from "../components/Header";
 
 const Home = () => {
   return (
-    <div className="max-w-[85%] m-auto">
+    <div>
       <Header />
-      <PopularRecipes />
-      <Recipes />
+      <div className="max-w-[85%] m-auto">
+        <PopularRecipes />
+        <Recipes />
+      </div>
     </div>
   );
 };
