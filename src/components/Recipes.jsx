@@ -20,35 +20,39 @@ const Recipes = () => {
   //   let recipes = data.recipes;
 
   return (
-    <div className="grid grid-cols-3 gap-5 p-5">
-      {recipes.length > 0 &&
-        recipes.map((recipe) => {
-          return (
-            <div
-              className="max-w-[610px] p-0 m-0 rounded-2xl overflow-hidden border-1 border-gray-200 shadow-sm hover:shadow-md cursor-pointer bg-white"
-              key={recipe.id}
-            >
-              <div className="p-0 m-0">
-                <div className="grid grid-cols-6 gap-1">
-                  <img
-                    alt={recipe.title}
-                    className="cover col-span-2"
-                    src={recipe.image}
-                  />
+    <div>
+      {" "}
+      <div className="grid lg:grid-cols-3 sm:grid-cols-2 gap-5 p-5">
+        {recipes.length > 0 &&
+          recipes.map((recipe) => {
+            return (
+              <div
+                className="max-w-[610px] p-0 m-0 rounded-2xl overflow-hidden border-1 border-gray-200 shadow-sm hover:shadow-md cursor-pointer bg-white"
+                key={recipe.id}
+              >
+                <div className="p-0 m-0">
+                  <div className="grid grid-cols-6 gap-1">
+                    <img
+                      alt={recipe.title}
+                      className="cover col-span-2"
+                      src={recipe.image}
+                    />
 
-                  <div className="flex flex-col justify-center col-span-4 p-3">
-                    <div>
-                      <h4 className="font-semibold">{recipe.title}</h4>
-                      <p className="text-gray-500">
-                        Ready in {recipe.readyInMinutes} mins
-                      </p>
+                    <div className="flex flex-col justify-center col-span-4 p-3">
+                      <div>
+                        <h4 className="font-semibold">{recipe.title}</h4>
+                        <p className="text-gray-500">
+                          Ready in {recipe.readyInMinutes} mins
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+      </div>
+      <p className="text-center">Loading more recipes</p>
     </div>
   );
 };

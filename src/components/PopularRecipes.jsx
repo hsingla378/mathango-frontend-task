@@ -6,7 +6,7 @@ import "../../src/style.css";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
-import { Navigation, Pagination } from "swiper/modules";
+import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import { recipes } from "../util/randomRecipes";
 import { Button, Card, CardFooter, Image } from "@nextui-org/react";
 
@@ -17,12 +17,17 @@ export const PopularRecipes = () => {
         slidesPerView={6}
         spaceBetween={30}
         navigation={true}
-        modules={[Navigation]}
+        modules={[Navigation, Autoplay]}
         className="mySwiper"
+        autoplay={{
+          delay: 2500,
+          disableOnInteraction: false,
+        }}
+        // loop={true}
       >
         {recipes.map((recipe) => {
           return (
-            <SwiperSlide key={recipe.id} className="cover">
+            <SwiperSlide key={recipe.id} className="cover rounded-lg">
               <Card className="cover">
                 <Image
                   alt={recipe.title}
