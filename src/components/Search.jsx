@@ -68,16 +68,16 @@ const Search = () => {
         className="w-[400px] max-w-[90%]"
       />
       {searchValue && (
-        <div className="absolute z-20 flex flex-col gap-4 mt-4 p-4 rounded-lg shadow-lg">
+        <div className="absolute z-20 flex flex-col gap-4 mt-4 p-4 rounded-lg">
           {isSearching ? (
             <p className="bg-white p-3 rounded-lg max-w-100px flex gap-1 items-center shadow-2xl">
-              Searching...
+              Searching... 🧐
             </p>
           ) : searchedRecipes.length > 0 ? (
             searchedRecipes.map((recipe) => (
               <div
                 key={recipe.id}
-                className="bg-white p-3 rounded-lg max-w-100px flex gap-1 items-center shadow-2xl"
+                className="bg-white p-3 rounded-lg max-w-100px flex gap-2 items-center shadow-2xl"
               >
                 <MdOutlineFastfood className="font-bold" />
                 <p>{highlightText(recipe.title, searchValue)}</p>
@@ -85,7 +85,7 @@ const Search = () => {
             ))
           ) : (
             <p className="bg-white p-3 rounded-lg max-w-100px flex gap-1 items-center shadow-2xl">
-              No recipes found.
+              No recipes found. 😢
             </p>
           )}
         </div>
