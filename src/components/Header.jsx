@@ -3,6 +3,7 @@ import React from "react";
 import { FaHeart } from "react-icons/fa";
 import { IoSearch } from "react-icons/io5";
 import Search from "./Search";
+import Favourite from "./Favourite";
 
 export const Header = () => {
   return (
@@ -14,14 +15,7 @@ export const Header = () => {
         </div>
         <div className="flex gap-4">
           {" "}
-          <Button
-            color=""
-            variant="bordered"
-            className="text-gray-800 w-44"
-            startContent={<FaHeart className="text-xl" />}
-          >
-            Favourite
-          </Button>
+          <Favourite />
           <Search />
         </div>
       </div>

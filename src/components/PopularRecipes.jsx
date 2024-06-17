@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "../../src/style.css";
 
@@ -9,8 +9,22 @@ import "swiper/css/navigation";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import { recipes } from "../util/randomRecipes";
 import { Button, Card, CardFooter, Image } from "@nextui-org/react";
+import RecipeModal from "./RecipeModal";
 
 export const PopularRecipes = () => {
+  const [selectedRecipe, setSelectedRecipe] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleCardClick = (recipe) => {
+    setSelectedRecipe(recipe);
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setSelectedRecipe(null);
+  };
+
   return (
     <div className="p-4">
       <Swiper
@@ -27,7 +41,11 @@ export const PopularRecipes = () => {
       >
         {recipes.map((recipe) => {
           return (
-            <SwiperSlide key={recipe.id} className="cover rounded-lg">
+            <SwiperSlide
+              key={recipe.id}
+              className="cover rounded-lg cursor-pointer"
+              onClick={() => handleCardClick(recipe)}
+            >
               <Card className="cover">
                 <Image
                   alt={recipe.title}
@@ -46,6 +64,14 @@ export const PopularRecipes = () => {
             </SwiperSlide>
           );
         })}
+        {selectedRecipe && (
+          <RecipeModal
+            recipe={selectedRecipe}
+            isOpen={isModalOpen}
+            onClose={handleModalClose}
+            onRecipeClick={handleCardClick}
+          />
+        )}
       </Swiper>
     </div>
   );
