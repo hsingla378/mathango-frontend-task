@@ -1,52 +1,67 @@
-import { Button } from "@nextui-org/react";
 import React, { useState, useEffect, useRef } from "react";
+import { Button } from "@nextui-org/react";
 import { FaHeart } from "react-icons/fa";
-import { MdOutlineFastfood } from "react-icons/md";
+import { MdDeleteOutline, MdOutlineFastfood } from "react-icons/md";
 import RecipeModal from "./RecipeModal";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const Favourite = () => {
-  const [favoriteRecipes, setFavoriteRecipes] = useState([]);
-  const [selectedRecipe, setSelectedRecipe] = useState(null);
+  const [favouriteRecipes, setFavouriteRecipes] = useState([]);
+  const [selectedRecipeId, setSelectedRecipeId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isFavoriteVisible, setIsFavoriteVisible] = useState(false);
-  const favoritesRef = useRef(null);
+  const [isFavouriteVisible, setIsFavouriteVisible] = useState(false);
+  const favouritesRef = useRef(null);
+  const navigate = useNavigate();
 
-  // Fetch favorite recipes from localStorage when the component mounts
+  // Fetch favourite recipes from localStorage when the component mounts
   useEffect(() => {
-    const storedFavorite = JSON.parse(localStorage.getItem("favorite")) || [];
-    setFavoriteRecipes(storedFavorite);
+    const storedFavourite = JSON.parse(localStorage.getItem("favourite")) || [];
+    setFavouriteRecipes(storedFavourite);
   }, []);
 
-  const handleCardClick = (recipe) => {
-    setSelectedRecipe(recipe);
+  // Check if the user is logged in or not
+  useEffect(() => {
+    if (localStorage.getItem("isLoggedIn") !== "true") {
+      toast.error("Please login to view recipes");
+      navigate("/login");
+    }
+  }, []);
+
+  const handleCardClick = (recipeId) => {
+    setSelectedRecipeId(recipeId);
     setIsModalOpen(true);
   };
 
   const handleModalClose = () => {
     setIsModalOpen(false);
-    setSelectedRecipe(null);
+    setSelectedRecipeId(null);
   };
 
-  const handleRemoveFavorite = (recipeId) => {
-    const updatedFavorites = favoriteRecipes.filter(
+  const handleRemoveFavourite = (recipeId) => {
+    const updatedFavourites = favouriteRecipes.filter(
       (recipe) => recipe.id !== recipeId
     );
-    setFavoriteRecipes(updatedFavorites);
-    localStorage.setItem("favorite", JSON.stringify(updatedFavorites));
+    setFavouriteRecipes(updatedFavourites);
+    toast.success("Removed from favourite");
+    localStorage.setItem("favourite", JSON.stringify(updatedFavourites));
   };
 
-  const toggleFavoriteVisibility = () => {
-    setIsFavoriteVisible(!isFavoriteVisible);
+  const toggleFavouriteVisibility = () => {
+    setIsFavouriteVisible(!isFavouriteVisible);
   };
 
   const handleClickOutside = (event) => {
-    if (favoritesRef.current && !favoritesRef.current.contains(event.target)) {
-      setIsFavoriteVisible(false);
+    if (
+      favouritesRef.current &&
+      !favouritesRef.current.contains(event.target)
+    ) {
+      setIsFavouriteVisible(false);
     }
   };
 
   useEffect(() => {
-    if (isFavoriteVisible) {
+    if (isFavouriteVisible) {
       document.addEventListener("mousedown", handleClickOutside);
     } else {
       document.removeEventListener("mousedown", handleClickOutside);
@@ -55,35 +70,37 @@ const Favourite = () => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isFavoriteVisible]);
+  }, [isFavouriteVisible]);
 
   return (
-    <div>
+    <div className="hidden lg:block">
       <Button
         color=""
         variant="bordered"
-        className="text-gray-800 w-44"
+        className={`text-gray-800 w-44 bg-white ${
+          isFavouriteVisible ? "text-blue-600" : ""
+        }`}
         startContent={<FaHeart className="text-xl" />}
-        onClick={toggleFavoriteVisibility}
+        onClick={toggleFavouriteVisibility}
       >
         Favourite
       </Button>
-      {isFavoriteVisible && (
+      {isFavouriteVisible && (
         <>
           <div className="fixed inset-0 bg-black opacity-50 z-10" />
           <div
-            ref={favoritesRef}
+            ref={favouritesRef}
             className="absolute z-20 flex flex-col gap-4 mt-4 p-4 rounded-lg"
           >
-            {favoriteRecipes.length > 0 ? (
-              favoriteRecipes.map((recipe) => (
+            {favouriteRecipes.length > 0 ? (
+              favouriteRecipes.map((recipe) => (
                 <div
                   key={recipe.id}
                   className="cursor-pointer bg-white p-3 rounded-lg max-w-100px flex gap-2 items-center shadow-2xl justify-between"
                 >
                   <div
                     className="flex items-center gap-2"
-                    onClick={() => handleCardClick(recipe)}
+                    onClick={() => handleCardClick(recipe.id)}
                   >
                     <MdOutlineFastfood className="font-bold" />
                     <p>{recipe.title}</p>
@@ -91,24 +108,24 @@ const Favourite = () => {
                   <Button
                     isIconOnly
                     color="error"
-                    onClick={() => handleRemoveFavorite(recipe.id)}
-                    aria-label="Remove from favorite"
+                    onClick={() => handleRemoveFavourite(recipe.id)}
+                    aria-label="Remove from favourite"
                   >
-                    <FaHeart className="text-red-600" />
+                    <MdDeleteOutline className="text-red-600 text-lg" />
                   </Button>
                 </div>
               ))
             ) : (
               <p className="bg-white p-3 rounded-lg max-w-100px flex gap-1 items-center shadow-2xl">
-                No favorite recipes found. 😢
+                No favourite recipes found. 😢
               </p>
             )}
           </div>
         </>
       )}
-      {selectedRecipe && (
+      {selectedRecipeId && (
         <RecipeModal
-          recipe={selectedRecipe}
+          recipeId={selectedRecipeId}
           isOpen={isModalOpen}
           onClose={handleModalClose}
           onRecipeClick={handleCardClick}

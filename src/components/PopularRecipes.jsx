@@ -7,35 +7,55 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
-import { recipes } from "../util/randomRecipes";
+// import { recipes } from "../util/randomRecipes";
 import { Button, Card, CardFooter, Image } from "@nextui-org/react";
 import RecipeModal from "./RecipeModal";
+import { truncateTitle } from "../util/constant";
 
-export const PopularRecipes = () => {
-  const [selectedRecipe, setSelectedRecipe] = useState(null);
+export const PopularRecipes = ({ isPending, error, recipes }) => {
+  const [selectedRecipeId, setSelectedRecipeId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleCardClick = (recipe) => {
-    setSelectedRecipe(recipe);
+  const handleCardClick = (recipeId) => {
+    setSelectedRecipeId(recipeId);
     setIsModalOpen(true);
   };
 
   const handleModalClose = () => {
     setIsModalOpen(false);
-    setSelectedRecipe(null);
+    setSelectedRecipeId(null);
   };
 
   return (
     <div className="p-4">
+    <h3 className="font-bold mb-3">Popular Recipes</h3>
       <Swiper
-        slidesPerView={6}
-        spaceBetween={30}
+        slidesPerView={2.2}
+        spaceBetween={15}
         navigation={true}
         modules={[Navigation, Autoplay]}
-        className="mySwiper"
+        className="mySwiper h-[152px]"
         autoplay={{
           delay: 2500,
           disableOnInteraction: false,
+        }}
+        breakpoints={{
+          640: {
+            slidesPerView: 3,
+            spaceBetween: 20,
+          },
+          768: {
+            slidesPerView: 4,
+            spaceBetween: 40,
+          },
+          1024: {
+            slidesPerView: 5,
+            spaceBetween: 50,
+          },
+          1280: {
+            slidesPerView: 6,
+            spaceBetween: 50,
+          },
         }}
         // loop={true}
       >
@@ -43,10 +63,10 @@ export const PopularRecipes = () => {
           return (
             <SwiperSlide
               key={recipe.id}
-              className="cover rounded-lg cursor-pointer"
-              onClick={() => handleCardClick(recipe)}
+              className="cover rounded-lg cursor-pointer h-full"
+              onClick={() => handleCardClick(recipe.id)}
             >
-              <Card className="cover">
+              <Card className="cover h-full">
                 <Image
                   alt={recipe.title}
                   className="cover h-full w-full brightness-[60%]"
@@ -54,9 +74,9 @@ export const PopularRecipes = () => {
                 />
                 <CardFooter className="flex-col items-start text-left py-1 absolute bottom-1 z-10">
                   <p className=" text-sm text-white font-semibold">
-                    {recipe.title}
+                    {truncateTitle(recipe.title, 15)}
                   </p>
-                  <p className="text-tiny text-gray-300">
+                  <p className="text-tiny text-gray-200">
                     Ready in {recipe.readyInMinutes} mins
                   </p>
                 </CardFooter>
@@ -64,9 +84,10 @@ export const PopularRecipes = () => {
             </SwiperSlide>
           );
         })}
-        {selectedRecipe && (
+        {selectedRecipeId && (
           <RecipeModal
-            recipe={selectedRecipe}
+            similarRecipes={recipes}
+            recipeId={selectedRecipeId}
             isOpen={isModalOpen}
             onClose={handleModalClose}
             onRecipeClick={handleCardClick}
